@@ -1,2 +1,17 @@
 *.ipynb
 .ipynb_checkpoints/
+# Model files
+*.pkl
+
+# Data files
+*.csv
+
+# Images
+*.jpg
+*.jpeg
+*.png
+
+# Optional: dataset & media folders
+data/
+datasets/
+images/
