@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Recommendation System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-cover bg-center" style="background-image:url('https://cdn.leonardo.ai/users/eb5304a7-72e4-47ea-a2fd-05727dbe73a4/generations/80406140-6b9e-4d08-a609-c5f228283e9a/segments/1:4:1/Flux_Dev_A_serene_landscape_photograph_capturing_the_moment_of_0.jpeg');">
+
+    <div class="bg-white bg-opacity-90 p-6 rounded-xl shadow-xl w-full max-w-md">
+        <h2 class="text-3xl font-bold text-green-700 text-center mb-4">🌱 Crop Recommendation</h2>
+
+        <form id="cropForm" class="space-y-4">
+            <div>
+                <label class="block text-gray-700 font-semibold">Nitrogen (N):</label>
+                <input type="number" id="N" class="w-full p-2 border rounded-md focus:ring-2 focus:ring-green-500">
+            </div>
+
+            <div>
+                <label class="block text-gray-700 font-semibold">Phosphorus (P):</label>
+                <input type="number" id="P" class="w-full p-2 border rounded-md focus:ring-2 focus:ring-green-500">
+            </div>
+
+            <div>
+                <label class="block text-gray-700 font-semibold">Potassium (K):</label>
+                <input type="number" id="K" class="w-full p-2 border rounded-md focus:ring-2 focus:ring-green-500">
+            </div>
+
+            <div>
+                <label class="block text-gray-700 font-semibold">Temperature (°C):</label>
+                <input type="number" id="temperature" step="0.1" class="w-full p-2 border rounded-md focus:ring-2 focus:ring-green-500">
+            </div>
+
+            <div>
+                <label class="block text-gray-700 font-semibold">Humidity (%):</label>
+                <input type="number" id="humidity" step="0.1" class="w-full p-2 border rounded-md focus:ring-2 focus:ring-green-500">
+            </div>
+
+            <div>
+                <label class="block text-gray-700 font-semibold">pH Level:</label>
+                <input type="number" id="ph" step="0.1" class="w-full p-2 border rounded-md focus:ring-2 focus:ring-green-500">
+            </div>
+
+            <div>
+                <label class="block text-gray-700 font-semibold">Rainfall (mm):</label>
+                <input type="number" id="rainfall" step="0.1" class="w-full p-2 border rounded-md focus:ring-2 focus:ring-green-500">
+            </div>
+
+            <button type="button" onclick="getPrediction()" class="w-full bg-green-600 text-white font-bold py-2 rounded-md hover:bg-green-700 transition duration-300">
+                Predict Crop
+            </button>
+        </form>
+
+        <!-- Result Alert Box -->
+        <div id="result" class="hidden mt-4 p-4 rounded-lg text-white font-bold text-lg text-center"></div>
+    </div>
+
+    <script>
+        function getPrediction() {
+            let N = document.getElementById("N").value;
+            let P = document.getElementById("P").value;
+            let K = document.getElementById("K").value;
+            let temperature = document.getElementById("temperature").value;
+            let humidity = document.getElementById("humidity").value;
+            let ph = document.getElementById("ph").value;
+            let rainfall = document.getElementById("rainfall").value;
+        
+            let inputData = {
+                "N": N,
+                "P": P,
+                "K": K,
+                "temperature": temperature,
+                "humidity": humidity,
+                "ph": ph,
+                "rainfall": rainfall
+            };
+        
+            fetch("http://127.0.0.1:5000/predict", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(inputData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                let resultBox = document.getElementById("result");
+                if (data.crop) {
+                    resultBox.innerText = "✅ Recommended Crop: " + data.crop;
+                    resultBox.className = "mt-4 p-4 rounded-lg bg-green-500 text-white font-bold text-lg";
+                } else {
+                    resultBox.innerText = "⚠️ Error: " + data.error;
+                    resultBox.className = "mt-4 p-4 rounded-lg bg-red-500 text-white font-bold text-lg";
+                }
+                resultBox.classList.remove("hidden");
+                alert(resultBox.innerText);
+            })
+            .catch(error => {
+                let resultBox = document.getElementById("result");
+                resultBox.innerText = "⚠️ Error connecting to server";
+                resultBox.className = "mt-4 p-4 rounded-lg bg-red-500 text-white font-bold text-lg";
+                resultBox.classList.remove("hidden");
+                alert(resultBox.innerText);
+                console.error("Error:", error);
+            });
+        }
+    </script>
+
+</body>
+</html>

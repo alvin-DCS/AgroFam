@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fertilizer Recommendation System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-image:url('https://cdn.leonardo.ai/users/eb5304a7-72e4-47ea-a2fd-05727dbe73a4/generations/80406140-6b9e-4d08-a609-c5f228283e9a/segments/3:4:1/Flux_Dev_A_serene_landscape_photograph_capturing_the_moment_of_2.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .output-box {
+            background-color: #f5e1c0; 
+            color: #6b4226; 
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            display: none; 
+        }
+    </style>
+</head>
+<body class="flex justify-center items-center h-screen bg-gray-900 bg-opacity-50">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-96">
+        <h2 class="text-2xl font-bold text-center text-brown-700 flex items-center justify-center">
+            <span class="mr-2">🌿</span> <span class="text-[#8B4513]">Fertilizer Recommendation</span>
+        </h2>
+
+        <form id="fertilizerForm" class="space-y-4">
+            <input type="number" id="N" placeholder="Nitrogen (N)" required class="w-full p-2 border rounded">
+            <input type="number" id="P" placeholder="Phosphorus (P)" required class="w-full p-2 border rounded">
+            <input type="number" id="K" placeholder="Potassium (K)" required class="w-full p-2 border rounded">
+            <input type="number" id="temperature" placeholder="Temperature (°C)" step="0.1" required class="w-full p-2 border rounded">
+            <input type="number" id="humidity" placeholder="Humidity (%)" step="0.1" required class="w-full p-2 border rounded">
+            <input type="number" id="moisture" placeholder="Moisture (%)" step="0.1" required class="w-full p-2 border rounded">
+
+            <select id="soil_type" required class="w-full p-2 border rounded">
+                <option value="" disabled selected>Select Soil Type</option>
+                <option value="Sandy">Sandy</option>
+                <option value="Loamy">Loamy</option>
+                <option value="Black">Black</option>
+                <option value="Red">Red</option>
+                <option value="Clayey">Clayey</option>
+            </select>
+
+            <select id="crop_type" required class="w-full p-2 border rounded">
+                <option value="" disabled selected>Select Crop Type</option>
+                <option value="Rice">Rice</option>
+                <option value="Wheat">Wheat</option>
+                <option value="Tobacco">Tobacco</option>
+                <option value="Sugarcane">Sugarcane</option>
+                <option value="Pulses">Pulses</option>
+                <option value="Pomegranate">Pomegranate</option>
+                <option value="Paddy">Paddy</option>
+                <option value="Oil seeds">Oil seeds</option>
+                <option value="Millets">Millets</option>
+                <option value="Maize">Maize</option>
+                <option value="Groundnut">Groundnut</option>
+                <option value="Cotton">Cotton</option>
+                <option value="Coffee">Coffee</option>
+                <option value="Watermelon">Watermelon</option>
+                <option value="Barley">Barley</option>
+                <option value="Kidney beans">Kidney beans</option>
+                <option value="Orange">Orange</option>
+            </select>
+
+            <button type="button" onclick="getPrediction()" class="w-full bg-[#8B4513] text-white p-2 rounded-lg hover:bg-[#6b3a1e]">
+                🌾 Predict Fertilizer
+            </button>
+        </form>
+
+        <div id="outputBox" class="output-box mt-4">
+            <p id="fertilizerOutput">Recommended Fertilizer: </p>
+        </div>
+    </div>
+
+    <script>
+        function getPrediction() {
+            let inputData = {
+                "N": document.getElementById("N").value,
+                "P": document.getElementById("P").value,
+                "K": document.getElementById("K").value,
+                "temperature": document.getElementById("temperature").value,
+                "humidity": document.getElementById("humidity").value,
+                "moisture": document.getElementById("moisture").value,
+                "soil_type": document.getElementById("soil_type").value,
+                "crop_type": document.getElementById("crop_type").value
+            };
+
+            fetch("http://127.0.0.1:5000/fertilizer-predict", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(inputData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                let outputBox = document.getElementById("outputBox");
+                let outputText = document.getElementById("fertilizerOutput");
+
+                if (data.fertilizer) {
+                    outputText.innerHTML = `🌿 Recommended Fertilizer: <strong>${data.fertilizer}</strong>`;
+                    outputBox.style.display = "block"; 
+                } else {
+                    outputText.innerHTML = `❌ Error: ${data.error}`;
+                    outputBox.style.display = "block"; 
+                }
+            })
+            .catch(error => {
+                alert("⚠️ Error connecting to server");
+                console.error("Error:", error);
+            });
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bidder Login</title>
+    <script src="https://cdn.tailwindcss.com"></script> 
+</head>
+<body class="bg-gray-900 flex items-center justify-center h-screen">
+
+<div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+    <h2 class="text-2xl font-bold text-center text-gray-800 mb-4">Bidder Login</h2>
+    
+    <p id="selectedProductId" class="text-sm text-gray-600 text-center mb-4"></p> 
+
+    <form id="bidderLoginForm">
+        <input type="text" id="bidderUsername" placeholder="Enter Username" class="w-full px-4 py-2 border rounded mb-4" required>
+        <input type="password" id="bidderPassword" placeholder="Enter Password" class="w-full px-4 py-2 border rounded mb-4" required>
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded w-full hover:bg-blue-700">Login</button>
+        
+        <p class="text-center text-sm text-gray-600 mt-4">
+            Don't have an account? <a href="bidder.html" class="text-blue-600 underline">Register here</a>.
+        </p>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('product_id');
+
+    if (productId) {
+        document.getElementById('selectedProductId').textContent = "Bidding for Product ID: " + productId;
+    }
+
+    document.getElementById("bidderLoginForm").addEventListener("submit", async function(event) {
+        event.preventDefault();
+
+        const username = document.getElementById('bidderUsername').value;
+        const password = document.getElementById('bidderPassword').value;
+
+        if (username && password) {
+            const formData = new URLSearchParams();
+            formData.append('username', username);
+            formData.append('password', password);
+            formData.append('product_id', productId); 
+
+            const response = await fetch('php/bidder_login.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formData
+            });
+
+            const result = await response.json();
+            if (result.status === 'success') {
+                window.location.href = `php/bid_page.php?product_id=${productId}`; 
+            } else {
+                alert(result.message); 
+            }
+        } else {
+            alert('Please enter both username and password.');
+        }
+    });
+});
+</script>
+
+</body>
+</html>

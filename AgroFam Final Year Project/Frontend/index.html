@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>AgroFam</title>
+    <style>
+        .text {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .container:hover .text {
+            opacity: 1;
+        }
+        /* Beautiful Footer Styles */
+        .footer {
+            background: linear-gradient(90deg, #4f4dce 0%, #388E3C 100%);
+            color: #fff;
+            padding: 40px 0 20px 0;
+            text-align: center;
+            box-shadow: 0 -2px 16px rgba(76,175,80,0.15);
+            position: relative;
+            margin-top: 40px;
+        }
+        .creators {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .creator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 16px 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .creator:hover {
+            transform: translateY(-6px) scale(1.05);
+            box-shadow: 0 6px 24px rgba(76,175,80,0.18);
+        }
+        .creator img {
+            width: 64px;
+            height: 64px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 8px rgba(76,175,80,0.15);
+        }
+        .creator a {
+            color: #0e0d0d;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+            transition: color 0.2s;
+        }
+        .creator a:hover {
+            color: #ffd700;
+            text-shadow: 0 2px 8px rgba(255,215,0,0.15);
+        }
+        .footer p {
+            margin-top: 16px;
+            font-size: 1rem;
+            opacity: 0.85;
+            letter-spacing: 0.5px;
+        }
+        @media (max-width: 600px) {
+            .creators {
+                gap: 16px;
+            }
+            .creator {
+                padding: 12px 8px;
+            }
+            .creator img {
+                width: 48px;
+                height: 48px;
+            }
+        }
+    </style>
+    </style>
+</head>
+
+<body>
+    <header class="header" id="header">
+        <nav class="nav container">
+            <a href="#" class="nav__logo">
+                <i class="ri-leaf-line nav__logo-icon"></i> AgroFam
+            </a>
+
+            <div class="nav__menu" id="nav-menu">
+                <ul class="nav__list">
+                    <li class="nav__item">
+                        <a href="#home" class="nav__link active-link">Home</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#about" class="nav__link">About</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#products" class="nav__link">Products</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#faqs" class="nav__link">FAQs</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="#registration" class="nav__link">Register <span class="dropdown__toggle"><i class="fas fa-caret-down"></i></span>
+                        </a>
+                        <div class="dropdown__menu">
+                            <ul><li><a href="farmer.html">Farmer Registration</a></li>
+                              <li><a href="bidder.html">Bidder Registration</a></li>
+                              </ul>
+                            </div>
+                   </li>
+                    <li class="nav__item">
+                         <a href="#contact" class="nav__link">Contact Us</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="bot.html" class="nav__link" target="_blank">Chatbot</a>
+                    </li>
+                </ul>
+
+                <div class="nav__close" id="nav-close">
+                    <i class="ri-close-line"></i>
+                </div>
+            </div>
+
+            <div class="nav__btns">
+                <i class="ri-moon-line change-theme" id="theme-button"></i>
+
+                <div class="nav__toggle" id="nav-toggle">
+                    <i class="ri-menu-line"></i>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <!--==================== HOME ====================-->
+        <section class="home" id="home">
+            <div class="home__container container grid">
+                <img src="img/home.png" alt="" class="home__img">
+
+                <div class="home__data">
+                    <h1 class="home__title">
+                       <a style="font-family: 'Poppins', sans-serif;font-weight: bold;color:#4CAF50; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);">AgroFam</a>:Smart Solutions for Modern Farming.
+                    </h1>
+                    <p class="home__description">
+                        Empowering Farmers with Smart Solutions for Plant Health, Bidding and Growth.
+                    </p>
+                    <a href="#about" class="button button--flex">
+                        Explore <i class="ri-arrow-right-down-line button__icon"></i>
+                    </a>
+                </div>
+
+
+            </div>
+        </section>
+        <!--==================== ABOUT ====================-->
+        <section class="about section container" id="about">
+            <div class="cont">
+                <h1>About <a class="typewriting"style="color: #4CAF50;">AgroFam</a></h1>
+                <p>AgroFam is a comprehensive platform designed to revolutionize agriculture by integrating technology with farming practices. Our website empowers farmers and agricultural enthusiasts with tools and resources to optimize their productivity and sustainability.</p>
+            
+                <div class="feature">
+                    <h2>Key Features of AgroFam:</h2>
+                    <br>
+                    <ol>
+                        <li>
+                            
+                            <strong>Plant Disease Detection</strong><br><br>
+                            <p>Utilize advanced AI and machine learning to detect plant diseases early. Simply upload a photo of your crop, and AgroFam will analyze the image to provide a detailed diagnosis and actionable solutions.</p>
+                        </li><br>
+                        <li>
+                         <strong>Bidding Platform</strong><br><br>
+                            <p>Connect with buyers and sellers through our dynamic bidding system. Whether you're a farmer looking to sell produce or a buyer searching for quality crops, our platform facilitates fair and transparent transactions.</p>
+                        </li><br>
+                        <li>
+                             <strong>Fertilizer Recommendations</strong><br><br>
+                            <p>Optimize crop growth with personalized fertilizer suggestions based on your soil's NPK (Nitrogen, Phosphorus, Potassium) values. Enter the NPK data, and AgroFam will recommend the ideal fertilizers to boost yield.</p>
+                        </li><br>
+                        <li>
+                            <strong>Plant Recommendations</strong><br><br>
+                            <p>Find the best crops to grow based on your region, soil type, and environmental conditions. AgroFam provides tailored suggestions to help you maximize agricultural efficiency.</p>
+                        </li><br>
+                    </ol>
+                </div>
+            
+                <p>At AgroFam, we aim to simplify farming, enhance decision-making, and promote sustainable agricultural practices. Join us in shaping the future of agriculture!</p>
+            </div> 
+        </section>
+        <!--==================== STEPS ====================-->
+            <section class="steps section container">
+                <div class="steps__bg">
+                    <h2 class="section__title-center steps__title">
+                       <u>Try out our Features </u>
+                        
+                    </h2>
+
+                    <div class="steps__container grid">
+                        <div class="steps__card steps__card1">
+                            <a href="DiseaseDetection.html" target="_blank" style="display: block; height: 100%; width: 100%;">
+                            <div class="overlay">
+                                <br><br><br><br><br>
+                                <div class="text">click to detect plant disease,upload the diseased plant
+                                    leaf <i class="fa-solid fa-leaf fa-beat-fade"></i> to detect the disease type
+                                    and find the remedies for the disease.
+                                </div>
+                            </div>
+                            <div class="steps__card-number">01</div>
+                            </a>
+                        </div>
+
+                        <div class="steps__card steps__card2">
+                            <a href="bidding.html">
+                                <div class="overlay">
+                                    <br><br><br><br><br>
+                                    <div class="text">click to enter the bidding platform <i class="fa-solid fa-people-roof"></i>.Make sure that you registered <i class="fa-solid fa-registered"></i> to participate in the bidding. </div>
+                                </div>
+                                <div class="steps__card-number">02</div>
+                            </a>
+                        </div>
+
+
+                        <div class="steps__card steps__card3">
+                            <a href="fertilizer_recommendation.html" target="_blank" >
+                            <div class="overlay">
+                                <div class="text">click to find the suitable fertilizers needed <br>for your plant <i class="fa-duotone fa-solid fa-seedling fa-bounce"></i> growth.<br></div>
+                            </div>
+                            <div class="steps__card-number">03</div>
+                            </a>
+                        </div>
+                        <div class="steps__card steps__card4">
+                            <a href="crop_recommendation.html" target="_blank" >
+                            <div class="overlay">
+                                <div class="text">click to find the suitable plant <i class="fa-duotone fa-solid fa-seedling fa-bounce"></i></i> to grow in your<br>environment <i class="fa-solid fa-tree fa-beat"></i> for better yield</div>
+                            </div>
+                            <div class="steps__card-number">04</div>
+                              </a>
+
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!--==================== PRODUCTS ====================-->
+            <section class="product section container" id="products">
+                <h2 class="section__title-center">
+                    Check out our <br> products
+                </h2>
+
+
+                <div class="product__container grid">
+                    <article class="product__card">
+                        <div class="product__circle"></div>
+
+                        <img src="img/product1.png" alt="" class="product__img">
+
+                        <h3 class="product__title">Cacti Plant</h3>
+                        <span class="product__price">Rs 1999</span>
+
+                        <button class="button--flex product__button">
+                            <i class="ri-shopping-bag-line"></i>
+                        </button>
+                    </article>
+
+                    <article class="product__card">
+                        <div class="product__circle"></div>
+
+                        <img src="img/product2.png" alt="" class="product__img">
+
+                        <h3 class="product__title">Cactus Plant</h3>
+                        <span class="product__price">Rs 1199</span>
+
+                        <button class="button--flex product__button">
+                            <i class="ri-shopping-bag-line"></i>
+                        </button>
+                    </article>
+
+                    <article class="product__card">
+                        <div class="product__circle"></div>
+
+                        <img src="img/product3.png" alt="" class="product__img">
+
+                        <h3 class="product__title">Aloe Vera Plant</h3>
+                        <span class="product__price">Rs 799</span>
+
+                        <button class="button--flex product__button">
+                            <i class="ri-shopping-bag-line"></i>
+                        </button>
+                    </article>
+
+                    <article class="product__card">
+                        <div class="product__circle"></div>
+
+                        <img src="img/product4.png" alt="" class="product__img">
+
+                        <h3 class="product__title">Succulent Plant</h3>
+                        <span class="product__price">Rs 599</span>
+
+                        <button class="button--flex product__button">
+                            <i class="ri-shopping-bag-line"></i>
+                        </button>
+                    </article>
+
+                    <article class="product__card">
+                        <div class="product__circle"></div>
+
+                        <img src="img/product5.png" alt="" class="product__img">
+
+                        <h3 class="product__title">Succulent Plant</h3>
+                        <span class="product__price">Rs 1099</span>
+
+                        <button class="button--flex product__button">
+                            <i class="ri-shopping-bag-line"></i>
+                        </button>
+                    </article>
+
+                    <article class="product__card">
+                        <div class="product__circle"></div>
+
+                        <img src="img/product6.png" alt="" class="product__img">
+
+                        <h3 class="product__title">Green Plant</h3>
+                        <span class="product__price">Rs 899</span>
+
+                        <button class="button--flex product__button">
+                            <i class="ri-shopping-bag-line"></i>
+                        </button>
+                    </article>
+                </div>
+            </section>
+
+            <!--==================== QUESTIONS ====================-->
+            <section class="questions section" id="faqs">
+                <h2 class="section__title-center questions__title container">
+                    Some common questions <br> were often asked
+                </h2>
+
+                <div class="questions__container container grid">
+                    <div class="questions__group">
+                        <div class="questions__item">
+                            <header class="questions__header">
+                                <i class="ri-add-line questions__icon"></i>
+                                <h3 class="questions__item-title">
+                                    How can I identify plant diseases?
+                                </h3>
+                            </header>
+
+                            <div class="questions__content">
+                                <p class="questions__description">
+                                    Look for symptoms such as spots, wilting, discoloration, or abnormal growth patterns
+                                    on leaves, stems, or fruit. Just scan and upload image to us and we'll do our best
+                                    to help you.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="questions__item">
+                            <header class="questions__header">
+                                <i class="ri-add-line questions__icon"></i>
+                                <h3 class="questions__item-title">
+                                    What are common plant diseases and their causes?
+                                </h3>
+                            </header>
+
+                            <div class="questions__content">
+                                <p class="questions__description">
+                                    Common diseases include powdery mildew, blight, and root rot, often caused by fungi,
+                                    bacteria, or environmental stressors.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="questions__item">
+                            <header class="questions__header">
+                                <i class="ri-add-line questions__icon"></i>
+                                <h3 class="questions__item-title">
+                                    How do I prevent plant diseases?
+                                </h3>
+                            </header>
+
+                            <div class="questions__content">
+                                <p class="questions__description">
+                                    Practice good garden hygiene, including proper watering, spacing, and sanitation,
+                                    and consider using disease-resistant varieties.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="questions__group">
+                        <div class="questions__item">
+                            <header class="questions__header">
+                                <i class="ri-add-line questions__icon"></i>
+                                <h3 class="questions__item-title">
+                                    What are organic methods for treating plant diseases?
+                                </h3>
+                            </header>
+
+                            <div class="questions__content">
+                                <p class="questions__description">
+                                    Options include neem oil, copper fungicides, and beneficial insects like ladybugs or
+                                    predatory mites.
+
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="questions__item">
+                            <header class="questions__header">
+                                <i class="ri-add-line questions__icon"></i>
+                                <h3 class="questions__item-title">
+                                    How do I treat plant diseases without harming beneficial insects?
+                                </h3>
+                            </header>
+
+                            <div class="questions__content">
+                                <p class="questions__description">
+                                    Use targeted treatments, such as insecticidal soaps or horticultural oils, and avoid
+                                    broad-spectrum pesticides.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="questions__item">
+                            <header class="questions__header">
+                                <i class="ri-add-line questions__icon"></i>
+                                <h3 class="questions__item-title">
+                                    When should I seek professional help for plant diseases?
+                                </h3>
+                            </header>
+
+                            <div class="questions__content">
+                                <p class="questions__description">
+                                    If symptoms persist despite home treatments, or if you're unsure about the
+                                    diagnosis, consult with a local extension service or plant health specialist.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!--==================== CONTACT ====================-->
+            <section class="contact section container" id="contact">
+                <div class="contact__container grid">
+                    <div class="contact__box">
+                        <h2 class="section__title">
+                            Reach out to us today <br> via any of the given <br> information
+                        </h2>
+                        <div class="contact__data">
+                            <div class="contact__information">
+                                <h3 class="contact__subtitle">Call us for instant support</h3>
+                                <span class="contact__description">
+                                    <i class="ri-phone-line contact__icon"></i>
+                                    +917012436192
+                                </span>
+                            </div>
+                            <div class="contact__information">
+                                <h3 class="contact__subtitle">Write us by mail</h3>
+                                <span class="contact__description">
+                                    <i class="ri-mail-line contact__icon"></i>
+                                    help@agrofam.com
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form action="" class="contact__form" id="contactForm">
+                        <div class="contact__inputs">
+                            <div class="contact__content">
+                                <input type="email" placeholder=" " class="contact__input" id="email" required>
+                                <label for="email" class="contact__label">Email</label>
+                            </div>
+
+                            <div class="contact__content">
+                                <input type="text" placeholder=" " class="contact__input" id="subject" required>
+                                <label for="subject" class="contact__label">Subject</label>
+                            </div>
+
+                            <div class="contact__content contact__area">
+                                <textarea name="message" placeholder=" " class="contact__input" id="message"
+                                    required></textarea>
+                                <label for="message" class="contact__label">Message</label>
+                            </div>
+                        </div>
+                        <button type="submit" class="button button--flex">
+                            Send Message
+                            <i class="ri-arrow-right-up-line button__icon"></i>
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <script>
+                document.getElementById('contactForm').addEventListener('submit', function (event) {
+                    event.preventDefault(); // Prevent the default form submission
+                    var email = document.getElementById('email').value.trim();
+                    var subject = document.getElementById('subject').value.trim();
+                    var message = document.getElementById('message').value.trim();
+                    if (email === '' || subject === '' || message === '') {
+                        alert('Please fill in all fields.');
+                        return; // Stop further execution
+                    }
+                    alert('Message sent successfully!');
+                    document.getElementById('contactForm').reset();
+                });
+            </script>
+
+    </main>
+    <footer class="footer">
+        <div class="creators">
+            <div class="creator">
+                <img src="img/alvin.JPG" alt="Developer">
+                <a href="https://github.com/creator1" target="_blank">Alvin</a>
+            </div>
+            <div class="creator">
+                <img src="img/sreelekshmi A.jpeg" alt="Developer">
+                <a href="https://github.com/creator2" target="_blank">Sreelekshmi A</a>
+            </div>
+            <div class="creator">
+                <img src="img/sooraj.jpeg" alt="Developer">
+                <a href="https://github.com/creator3" target="_blank">Sooraj</a>
+            </div>
+            <div class="creator">
+                <img src="img/sreelekshmi.jpeg" alt="Developer">
+                <a href="https://github.com/creator4" target="_blank">Sreelekshmi</a>
+            </div>
+        </div>
+        <p>&copy; 2024 AgroFam. All rights reserved.</p>
+    </footer>
+    <a href="#" class="scrollup" id="scroll-up">
+        <i class="ri-arrow-up-fill scrollup__icon"></i>
+    </a>
+    <!-- Js Files  -->
+    <script src="js/scroll.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/dropdownImage.js"></script>
+    <script src="js/dropdown.js"></script>
+    <script src="js/registration.js"></script>
+</body>
+
+</html>

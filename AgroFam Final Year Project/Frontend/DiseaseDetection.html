@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload & Capture</title>
+    <style>
+        
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #161515;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            position: relative;
+            animation: glowing 3s infinite linear;
+        }
+        @keyframes glowing {
+            0% {
+                box-shadow: 0 -10px 20px rgba(255, 0, 0, 0.8), 10px 0 20px rgba(0, 255, 0, 0.8), -10px 0 20px rgba(0, 0, 255, 0.8);
+            }
+            33% {
+                box-shadow: 10px 0 20px rgba(255, 0, 0, 0.8), 0 10px 20px rgba(0, 255, 0, 0.8), 0 -10px 20px rgba(0, 0, 255, 0.8);
+            }
+            66% {
+                box-shadow: 0 10px 20px rgba(255, 0, 0, 0.8), -10px 0 20px rgba(0, 255, 0, 0.8), 10px 0 20px rgba(0, 0, 255, 0.8);
+            }
+            100% {
+                box-shadow: -10px 0 20px rgba(255, 0, 0, 0.8), 0 -10px 20px rgba(0, 255, 0, 0.8), 0 10px 20px rgba(0, 0, 255, 0.8);
+            }
+        }
+        #preview {
+            margin-top: 20px;
+        width: 300px;  /* Set fixed width */
+        height: 300px; /* Set fixed height */
+        object-fit: cover; /* Prevents distortion */
+        display: none;
+        border: 2px solid black; /* Optional: Adds a border */
+        border-radius: 10px; /* Optional: Rounded corners */
+        }
+        video {
+            display: none;
+            width: 100%;
+            max-width: 400px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        input[type="file"] {
+            margin-top: 10px;
+        }
+        #output {
+            font-family: Arial, Helvetica, sans-serif;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Plant Disease Detection</h2>
+        <input type="file" accept="image/*" id="imageInput">
+        <button id="captureButton">Capture from Camera</button>
+        <video id="camera" autoplay></video>
+        <canvas id="canvas" style="display: none;"></canvas>
+        <br>
+        <img id="preview" alt="Image Preview">
+        <br><br>
+        <button onclick="uploadImage()">Detect Disease</button>
+        <pre id="output"></pre>
+        <div id="results" style="display: none;"></div>  
+    </div>
+
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const preview = document.getElementById('preview');
+        const captureButton = document.getElementById('captureButton');
+        const video = document.getElementById('camera');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        let capturedImage = null;
+
+        imageInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    capturedImage = file;  
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        captureButton.addEventListener('click', async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+                video.style.display = 'block';
+                captureButton.textContent = 'Take Photo';
+                captureButton.onclick = () => {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    preview.src = canvas.toDataURL('image/png');
+                    preview.style.display = 'block';
+                    video.style.display = 'none';
+                    stream.getTracks().forEach(track => track.stop());
+                    captureButton.textContent = 'Capture from Camera';
+                    canvas.toBlob((blob) => {
+                        capturedImage = new File([blob], "captured.png", { type: "image/png" });
+                    }, "image/png");
+                };
+            } catch (error) {
+                alert('Error accessing camera: ' + error);
+            }
+        });
+
+        async function uploadImage() {
+            if (!capturedImage) {
+                alert("Please select or capture an image first.");
+                return;
+            }
+
+            let formData = new FormData();
+            formData.append("image", capturedImage);
+
+            try {
+        let response = await fetch("http://127.0.0.1:5000/detect", {
+            method: "POST",
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+             }
+
+              let result = await response.json();
+               console.log("Received result:", result); 
+               displayResults(result);
+        }      catch (error) {
+               console.error("Error in uploadImage:", error);
+              alert("Failed to get a valid response from the server.");
+           }
+        }
+
+        function displayResults(result) {
+    let outputDiv = document.getElementById("output");
+    let resultsContainer = document.getElementById("results");
+
+    outputDiv.innerHTML = ""; 
+
+    if (result.detections.length > 0) {
+        result.detections.forEach(disease => {
+            let div = document.createElement("div");
+            div.classList.add("result-item");
+
+            div.innerHTML = `
+                <h3 id="diseaseTitle" style="text-align:center; margin-bottom: 5px; padding-top: 10px; font-size: 16px;">
+                    ${disease.class_name} (Confidence: ${Math.round(disease.confidence * 100)}%)
+                </h3>
+
+                <div style="display: flex; justify-content: space-between; gap: 3px; margin-top: 5px;">
+
+                    <!-- Disease Details Section -->
+                    <div style="flex: 1; border: 1px solid black; padding: 5px; border-radius: 5px; background-color: #f4e1d2; max-width: 45%;">
+                        <h1 style="color: #d9534f; text-align: center; font-size: 14px; margin-bottom: 5px;"><u>Disease Details</u></h1>
+                        <p style="margin: 3px 0; font-size: 12px;"><strong>Name:</strong> ${sanitizeText(disease.disease_info.name)}</p>
+                        <p style="margin: 3px 0; font-size: 12px; text-align: left;"><strong>Description:</strong> ${sanitizeText(disease.disease_info.description)}</p>
+                        <p style="margin: 3px 0; font-size: 12px; text-align: left;"><strong>Possible Steps:</strong> ${sanitizeText(disease.disease_info.prevention)}</p>
+                        ${disease.disease_info.image_url ? `<img src="${disease.disease_info.image_url}" alt="Disease Image" style="width: 100%; max-width: 120px; display: block; margin: 3px auto; border-radius: 3px;">` : ""}
+                    </div>
+
+                    <!-- Supplement Recommendation Section -->
+                    <div style="flex: 1; border: 1px solid black; padding: 5px; border-radius: 5px; background-color: #e8f5e9; max-width: 45%;">
+                        <h1 style="color: #5cb85c; text-align: center; font-size: 14px; margin-bottom: 5px;"><u>Supplement Recommendation</u></h1>
+                        <p style="margin: 3px 0; font-size: 12px;"><strong>Supplement Name:</strong> ${sanitizeText(disease.supplement_info.name)}</p>
+                        ${disease.supplement_info.image_url ? `<img src="${disease.supplement_info.image_url}" alt="Supplement Image" style="width: 100%; max-width: 120px; display: block; margin: 3px auto; border-radius: 3px;">` : ""}
+                        <p style="margin: 3px 0; font-size: 12px;"><strong>Buy Link:</strong> <a href="${disease.supplement_info.buy_link}" target="_blank" style="color: #0275d8; text-decoration: none; font-size: 12px;">Click Here</a></p>
+                    </div>
+
+                </div>
+            `;
+
+            outputDiv.appendChild(div);
+        });
+
+        resultsContainer.style.display = "block";
+
+        
+        setTimeout(() => {
+            let titleElement = document.getElementById("diseaseTitle");
+            if (titleElement) {
+                let yOffset = -60; 
+                let y = titleElement.getBoundingClientRect().top + window.scrollY + yOffset;
+                window.scrollTo({ top: y, behavior: 'smooth' });
+            }
+        }, 200);
+    } else {
+        outputDiv.innerHTML = "<strong>No plant disease detected.</strong>";
+        resultsContainer.style.display = "block";
+    }
+}
+
+
+function sanitizeText(text) {
+    return text ? text.replace(/\n+/g, ' ').trim() : "No information available";
+}
+
+    </script>
+</body>
+</html>

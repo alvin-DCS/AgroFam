@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Bidding</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900">
+    <div class="max-w-6xl mx-auto">
+        
+        <div class="flex justify-between items-center mb-4">
+           
+            <button id="addProduct" class="flex items-center bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 mr-2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+                Add Product
+            </button>
+        </div>
+
+        
+        <div id="productGrid" class=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </div>
+
+   
+    <div id="modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center hidden">
+        <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md max-h-full overflow-y-auto">
+            
+            <div id="loginForm">
+                <h2 class="text-xl font-bold mb-4">Farmer Login</h2>
+                <input id="username" type="text" placeholder="Username" class="w-full px-4 py-2 border rounded mb-4">
+                <input id="password" type="password" placeholder="Password" class="w-full px-4 py-2 border rounded mb-4">
+                <button id="loginButton" class="bg-blue-600 text-white px-4 py-2 rounded w-full hover:bg-blue-700">Login</button>
+                <p>Forgot to register? <a href="farmer.html" class="text-blue-600 underline">Click Here.</a></p>
+            </div>
+    
+            
+            <div id="addProductForm" class="hidden">
+                <h2 class="text-xl font-bold mb-4">Add Product</h2>
+                <input id="productName" type="text" placeholder="Product Name" class="w-full px-4 py-2 border rounded mb-4">
+                <input id="pricePerKilo" type="number" placeholder="Price per Kilo (₹)" class="w-full px-4 py-2 border rounded mb-4">
+                <input id="quantity" type="number" placeholder="Quantity (Kilos)" class="w-full px-4 py-2 border rounded mb-4">
+                <input id="bidduration" type="datetime-local" placeholder="Bid-Duration" class="w-full px-4 py-2 border rounded mb-4">
+                
+                <input id="country" type="text" placeholder="Country" class="w-full px-4 py-2 border rounded mb-4">
+                <input id="state" type="text" placeholder="State" class="w-full px-4 py-2 border rounded mb-4">
+                <input id="district" type="text" placeholder="District/Place" class="w-full px-4 py-2 border rounded mb-4">
+    
+                
+                <button id="uploadImageBtn" class="w-full px-4 py-2 border rounded mb-4 bg-gray-600 text-white hover:bg-gray-700">
+                    Upload Product Image
+                </button>
+                <input id="productImage" type="file" class="hidden" accept="image/*">
+                <div id="imagePreview" class="mb-4 hidden">
+                    <h3 class="font-semibold">Preview:</h3>
+                    <img id="previewImage" src="" alt="Product Image Preview" class="w-32 h-32 object-cover rounded mt-2">
+                </div>
+    
+                <button id="submitProduct" class="bg-green-600 text-white px-4 py-2 rounded w-full hover:bg-green-700">Submit</button>
+            </div>
+        </div>
+    </div>
+    
+                
+
+    <script>
+        const modal = document.getElementById('modal');
+        const addProductBtn = document.getElementById('addProduct');
+        const loginForm = document.getElementById('loginForm');
+        const addProductForm = document.getElementById('addProductForm');
+        const loginButton = document.getElementById('loginButton');
+        const submitProduct = document.getElementById('submitProduct');
+        const productGrid = document.getElementById('productGrid');
+        const uploadImageBtn = document.getElementById('uploadImageBtn');
+        const productImageInput = document.getElementById('productImage');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImage = document.getElementById('previewImage');
+
+        addProductBtn.addEventListener('click', () => {
+            modal.classList.remove('hidden');
+            loginForm.classList.remove('hidden');
+            addProductForm.classList.add('hidden');
+            document.getElementById('productName').value = '';
+            document.getElementById('pricePerKilo').value = '';
+            document.getElementById('quantity').value = '';
+            document.getElementById('bidduration').value = '';
+            document.getElementById('country').value = '';
+            document.getElementById('state').value = '';
+            document.getElementById('district').value = '';
+          previewImage.src = '';  
+          imagePreview.classList.add('hidden'); 
+        });
+
+        loginButton.addEventListener('click', async () => {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username && password) {
+                const response = await fetch('/Frontend/php/farmlogin.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({ username, password })
+                });
+
+                const result = await response.json();
+                if (result.status === 'success') {
+                    alert('Login Successful!');
+                    loginForm.classList.add('hidden');
+                    addProductForm.classList.remove('hidden');
+                } else {
+                    alert('Invalid credentials! ' + result.message);
+                }
+            } else {
+                alert('Please fill in both username and password.');
+            }
+        });
+
+        uploadImageBtn.addEventListener('click', () => {
+            productImageInput.click();
+        });
+
+        productImageInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    imagePreview.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        async function fetchProducts() {
+    try {
+        const response = await fetch('/Frontend/php/fetch_products.php');
+        const products = await response.json();
+
+        const productGrid = document.getElementById('productGrid');
+        productGrid.innerHTML = ''; 
+
+        products.forEach(product => {
+            const productContainer = document.createElement('div');
+            productContainer.className = "bg-white shadow-md rounded-lg p-4";
+            
+            
+            const endTime = new Date(product.end_time);
+            const now = new Date();
+            const timeLeft = endTime - now;
+
+            let durationText = "";
+            if (timeLeft > 0) {
+                const days = Math.floor(timeLeft / (1000 * 3600 * 24));
+                const hours = Math.floor((timeLeft % (1000 * 3600 * 24)) / (1000 * 3600));
+                const minutes = Math.floor((timeLeft % (1000 * 3600)) / (1000 * 60));
+
+                if (days > 0) durationText += `${days}d `;
+                if (hours > 0) durationText += `${hours}h `;
+                if (minutes > 0) durationText += `${minutes}m`;
+            } else {
+                durationText = "Expired";
+            }
+
+            // Calculate the bid price
+            const bidPrice = product.bid_price;
+            productContainer.innerHTML = `
+
+           <div class="overflow-hidden w-full">
+            <div class="relative w-full h-64 mb-2">
+              <img src="${product.image}" alt="Product Image" class="w-full h-full object-cover rounded">
+            </div>
+              <h2 class="text-lg font-semibold">${product.name}</h2>
+              <p class="text-sm text-gray-600">Quantity: ${product.quantity} Kilos</p>
+              <p class="text-sm text-gray-600">Bid Price: ₹${bidPrice}</p>
+              <p class="text-sm text-gray-600">Time Left: ${durationText}</p>
+              <button class="mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 w-full bidButton" data-product-id="${product.id}">Bid</button>
+        </div>
+    `;
+
+            productGrid.appendChild(productContainer);
+        });
+        document.querySelectorAll('.bidButton').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const productId = event.target.getAttribute('data-product-id');
+                window.location.href = `bidder_login.html?product_id=${productId}`;
+            });
+        });
+        
+    } catch (error) {
+        console.error("Error fetching products:", error);
+    }
+}
+
+
+fetchProducts();
+setInterval(fetchProducts, 5000);
+
+submitProduct.addEventListener('click', async () => {
+    submitProduct.disabled = true;  
+    submitProduct.textContent = 'Submitting...';  
+    
+    const productName = document.getElementById('productName').value;
+    const pricePerKilo = document.getElementById('pricePerKilo').value;
+    const quantity = document.getElementById('quantity').value;
+    const bidTime = document.getElementById('bidduration').value;
+    const country = document.getElementById('country').value;
+    const state = document.getElementById('state').value;
+    const district = document.getElementById('district').value;
+    const productImage = document.getElementById('productImage').files[0];
+    if (productName && pricePerKilo && quantity && bidTime && country && state && district && productImage) {
+        const formData = new FormData();
+        formData.append('action', 'addProduct');
+        formData.append('productName', productName);
+        formData.append('pricePerKilo', pricePerKilo);
+        formData.append('quantity', quantity);
+        formData.append('bidTime', bidTime);
+        formData.append('country', country);
+        formData.append('state', state);
+        formData.append('district', district);
+        formData.append('productImage', productImage); 
+
+        try {
+            const response = await fetch('/Frontend/php/submitproduct.php', {
+                method: 'POST',
+                body: formData, 
+            });
+
+            const result = await response.json();
+            if (result.status === 'success') {
+                alert(result.message);
+                modal.classList.add('hidden');
+                fetchProducts(); 
+            } else {
+                alert('Error: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred while adding the product.');
+        }
+    } else {
+        alert('Please fill out all fields and select an image.');
+    }
+
+    submitProduct.disabled = false;  
+    submitProduct.textContent = 'Submit';  
+});
+
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
