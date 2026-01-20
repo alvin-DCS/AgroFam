@@ -51,4 +51,4 @@ AgroFam is a smart farming ecosystem powered by machine learning and deep learni
 - Ensure all required dependencies are installed for both the backend (Python/Flask) and frontend (PHP/Composer).
 - Check configuration files for proper API key placement and model paths.
 
-![Dashboard](/agro1.png)
+![Dashboard](agro1.jpeg)
